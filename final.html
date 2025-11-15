@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PrepWise — Single HTML Multi-Page Demo</title>
+<style>
+  :root{
+    --bg:#07070b;
+    --card:rgba(18,19,28,0.66);
+    --accent:#d8c9ff;
+    --muted:#bdbbd0;
+    --glass-border:rgba(255,255,255,0.04);
+    --radius:24px;
+    --fw-bold:700;
+  }
+  *{box-sizing:border-box}
+  body,html{height:100%;margin:0;font-family:Inter,system-ui,Arial;color:#e9e9f2;background:var(--bg);}
+
+  /* Dark grid background + glow */
+  .bg-grid{position:fixed;inset:0;z-index:-3;background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size:56px 56px;}
+  .bg-glow{position:fixed;inset:0;z-index:-2;background:
+    radial-gradient(circle at 40% 10%, rgba(140,110,255,0.12), transparent 55%);}
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:-1}
+
+  /* small star style */
+  .star{position:absolute;border-radius:50%;background:linear-gradient(180deg,#fff,#cfc3ff);opacity:0.9;
+    width:2px;height:2px;animation:twink 5s infinite ease-in-out}
+  @keyframes twink{0%,100%{opacity:.08;transform:scale(.8)}50%{opacity:1;transform:scale(1.3)}}
+
+  /* main layout */
+  .app{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
+  .screen{width:100%;max-width:980px;display:none}
+  .screen.active{display:block;animation:fadeUp .45s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* shared card style */
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid var(--glass-border);
+    border-radius:var(--radius);
+    padding:28px;backdrop-filter:blur(10px);box-shadow:0 12px 40px rgba(2,3,6,0.7);
+  }
+
+  /* header small */
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,#bdb0ff,#8e7bff);display:flex;align-items:center;justify-content:center;font-weight:700}
+  h1.logo-title{font-size:18px;margin:0}
+
+  /* form controls */
+  label{display:block;color:var(--muted);font-size:13px;margin-bottom:8px}
+  .input, select{width:100%;padding:12px 16px;border-radius:28px;border:1px solid rgba(255,255,255,0.03);
+    background:#16171c;color:inherit;font-size:14px;outline:none}
+  .row{display:flex;gap:12px}
+  .row .col{flex:1}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* buttons */
+  .btn{padding:12px 18px;border-radius:999px;border:0;cursor:pointer;font-weight:700}
+  .btn.primary{background:var(--accent);color:#0a0810;box-shadow:0 10px 30px rgba(193,172,255,0.12)}
+  .btn.ghost{background:#2f313a;color:white}
+  .btn.warn{background:#ff6b6b;color:white}
+
+  /* panels for interview screens */
+  .panels{display:flex;gap:20px}
+  .panel{flex:1;padding:22px;border-radius:20px;background:rgba(20,22,33,0.6);border:1px solid var(--glass-border);text-align:center;backdrop-filter:blur(6px)}
+  .panel img{width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:12px}
+  .panel h3{margin:8px 0 0;font-size:18px}
+
+  /* question box */
+  .question{margin-top:20px;padding:14px 18px;border-radius:16px;background:rgba(10,10,12,0.6);border:1px solid var(--glass-border);text-align:center;font-size:17px}
+
+  /* cards grid for dashboard */
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:18px}
+  .service-card{padding:16px;border-radius:16px;background:rgba(18,19,28,0.7);border:1px solid var(--glass-border);min-height:120px;display:flex;flex-direction:column;justify-content:space-between}
+  .badge{display:inline-block;padding:6px 12px;border-radius:14px;background:rgba(150,150,255,0.12);font-size:12px}
+
+  /* feedback styling */
+  .score{display:inline-block;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.06);font-weight:700}
+  .verdict{display:inline-block;padding:8px 12px;border-radius:14px;background:#ff6b6b;color:#11070a;font-weight:800;margin-left:10px}
+
+  /* responsive */
+  @media (max-width:780px){
+    .panels{flex-direction:column}
+    .card{padding:18px}
+  }
+
+  /* tiny helper */
+  .muted{color:var(--muted)}
+  .center{text-align:center}
+</style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="stars" id="stars"></div>
+
+  <main class="app">
+    <!-- 1) LOGIN SCREEN -->
+    <section id="login" class="screen active">
+      <div class="card" style="max-width:520px;margin:auto">
+        <div class="topbar">
+          <div class="logo"><div class="mark">PW</div><div><h1 class="logo-title">PrepWise</h1><div class="small muted">Practice interviews with AI</div></div></div>
+          <div class="small muted">Demo</div>
+        </div>
+
+        <h2 style="margin-top:6px">Welcome back</h2>
+        <p class="small muted">Sign in to continue to your PrepWise dashboard</p>
+
+        <div style="margin-top:18px">
+          <label>Email</label>
+          <input id="loginEmail" class="input" type="email" placeholder="you@example.com" />
+        </div>
+
+        <div style="margin-top:12px; position:relative">
+          <label>Password</label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input id="loginPwd" class="input" type="password" placeholder="Enter password" />
+            <button id="togglePwd" class="btn ghost" style="padding:10px;border-radius:12px">Show</button>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+          <div class="small muted">Don't have an account? <a href="#" id="goSignup">Create</a></div>
+          <div>
+            <button class="btn ghost" onclick="go('dashboard')">Demo Login</button>
+            <button class="btn primary" onclick="login()">Sign in</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2) DASHBOARD -->
+    <section id="dashboard" class="screen">
+      <div class="card">
+        <div class="topbar">
+          <div class="logo"><div class="mark">PW</div><div><h1 class="logo-title">PrepWise</h1><div class="small muted">Dashboard</div></div></div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="small muted">Hi, Adrian</div>
+            <img src="" alt="avatar" id="avatarTiny" style="width:44px;height:44px;border-radius:50%;background:#2b2d36" />
+          </div>
+        </div>
+
+        <section style="margin-top:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2 style="margin:0">Get Interview-Ready with AI</h2>
+              <p class="small muted" style="margin-top:6px">Choose a track and start a mock interview.</p>
+            </div>
+            <div style="width:160px;text-align:right">
+              <button class="btn ghost" onclick="go('confirmation')">New interview</button>
+            </div>
+          </div>
+
+          <h3 style="margin-top:20px">Your Past Interviews</h3>
+          <div class="cards-grid">
+            <div class="service-card">
+              <div><span class="badge">Technical</span></div>
+              <div style="margin-top:10px"><b>Frontend Dev Interview</b><div class="small muted" style="margin-top:6px">Feb 28, 2025 • 30m</div></div>
+              <div style="margin-top:12px"><button class="btn ghost" onclick="openInterview('frontend', true)">View Interview</button></div>
+            </div>
+            <div class="service-card">
+              <div><span class="badge">Non-Technical</span></div>
+              <div style="margin-top:10px"><b>Behavioral Interview</b><div class="small muted" style="margin-top:6px">Jan 21, 2025 • 20m</div></div>
+              <div style="margin-top:12px"><button class="btn ghost" onclick="openInterview('behavioral', true)">View Interview</button></div>
+            </div>
+            <div class="service-card">
+              <div><span class="badge">Technical</span></div>
+              <div style="margin-top:10px"><b>Backend Dev Interview</b><div class="small muted" style="margin-top:6px">Dec 03, 2024 • 25m</div></div>
+              <div style="margin-top:12px"><button class="btn ghost" onclick="openInterview('backend', true)">View Interview</button></div>
+            </div>
+          </div>
+
+          <h3 style="margin-top:18px">Pick Your Interview</h3>
+          <div class="cards-grid">
+            <div class="service-card">
+              <div style="display:flex;justify-content:space-between;align-items:center"><b>Full-Stack Dev</b><span class="badge">Technical</span></div>
+              <div class="small muted" style="margin-top:8px">Wide-ranging full-stack questions</div>
+              <div style="margin-top:10px"><button class="btn primary" onclick="startFromDashboard('Full-Stack')">Take Interview</button></div>
+            </div>
+
+            <div class="service-card">
+              <div style="display:flex;justify-content:space-between;align-items:center"><b>DevOps & Cloud</b><span class="badge">Technical</span></div>
+              <div class="small muted" style="margin-top:8px">Cloud, Kubernetes, CI/CD</div>
+              <div style="margin-top:10px"><button class="btn primary" onclick="startFromDashboard('DevOps')">Take Interview</button></div>
+            </div>
+
+            <div class="service-card">
+              <div style="display:flex;justify-content:space-between;align-items:center"><b>HR Screening</b><span class="badge">Non-Technical</span></div>
+              <div class="small muted" style="margin-top:8px">HR & behavioral practice</div>
+              <div style="margin-top:10px"><button class="btn primary" onclick="startFromDashboard('HR')">Take Interview</button></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- 3) WORKFLOW / INTERVIEW START (selection) -->
+    <section id="workflow" class="screen">
+      <div class="card" style="max-width:560px;margin:auto">
+        <div class="topbar">
+          <div class="logo"><div class="mark">PW</div><div><h1 class="logo-title">PrepWise</h1><div class="small muted">Workflow Page</div></div></div>
+          <div><button class="btn ghost" onclick="go('dashboard')">Back</button></div>
+        </div>
+
+        <h2>Frontend Developer Interview</h2>
+        <div class="small muted">Customize before you start the mock interview</div>
+
+        <div style="display:flex;gap:18px;margin-top:18px" class="panels">
+          <div class="panel">
+            <h3>AI Interviewer</h3>
+            <img src="" alt="ai" id="aiImg" style="background:#221f33" />
+            <div class="small muted" style="margin-top:8px">Automated interviewer — voice & feedback</div>
+          </div>
+
+          <div class="panel">
+            <h3>You</h3>
+            <img src="" alt="you" id="youImg" style="background:#232428" />
+            <div class="small muted" style="margin-top:8px">Adrian (You)</div>
+          </div>
+        </div>
+
+        <div class="question" style="margin-top:18px">What job <b>experience level</b> are you targeting?</div>
+
+        <div style="display:flex;gap:12px;margin-top:18px;align-items:center">
+          <select id="expLevel" style="flex:1" class="input">
+            <option>Entry Level</option>
+            <option>Junior</option>
+            <option selected>Mid</option>
+            <option>Senior</option>
+          </select>
+          <button class="btn primary" onclick="go('confirmation')">Next</button>
+        </div>
+
+        <div style="margin-top:14px;text-align:center">
+          <button class="btn ghost" onclick="go('dashboard')">Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4) CONFIRMATION -->
+    <section id="confirmation" class="screen">
+      <div class="card" style="max-width:520px;margin:auto">
+        <div class="topbar">
+          <div class="logo"><div class="mark">PW</div><div><h1 class="logo-title">PrepWise</h1><div class="small muted">Starting Your Interview</div></div></div>
+          <div><button class="btn ghost" onclick="go('workflow')">Back</button></div>
+        </div>
+
+        <h2>Starting Your Interview</h2>
+        <p class="small muted">Customize your mock interview to suit your needs.</p>
+
+        <div style="margin-top:12px">
+          <label>Type of interview</label>
+          <select id="confirmType" class="input">
+            <option>Technical</option>
+            <option>Non-Technical</option>
+          </select>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Role</label>
+          <input id="confirmRole" class="input" placeholder="Frontend Developer" />
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Tech stack</label>
+          <input id="confirmStack" class="input" placeholder="React, Node.js" />
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:12px">
+          <select id="confirmLength" class="input" style="width:170px">
+            <option>10 minutes</option>
+            <option selected>20 minutes</option>
+            <option>30 minutes</option>
+          </select>
+          <label class="input" style="display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer">
+            Upload profile <input type="file" id="confirmProfile" style="display:none" accept="image/*" />
+          </label>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:12px;justify-content:space-between">
+          <button class="btn ghost" onclick="go('workflow')">Back</button>
+          <button class="btn primary" onclick="startInterview()">Start Interview</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5) INTERVIEW PAGE -->
+    <section id="interview" class="screen">
+      <div class="card">
+        <div class="topbar">
+          <div class="logo"><div class="mark">PW</div><div><h1 class="logo-title">PrepWise</h1><div class="small muted">Live Interview</div></div></div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="badge muted" id="interviewBadge">Technical Interview</div>
+            <img src="" id="interviewAvatar" style="width:44px;height:44px;border-radius:50%;background:#232426" />
+          </div>
+        </div>
+
+        <div class="panels">
+          <div class="panel" id="panelAI" style="border:2px solid rgba(200,180,255,0.08)">
+            <img src="" alt="" id="aiFace" />
+            <h3>AI Interviewer</h3>
+          </div>
+          <div class="panel">
+            <img src="" alt="" id="youFace" />
+            <h3>Adrian (You)</h3>
+          </div>
+        </div>
+
+        <div class="question" id="currentQuestion">What is the <b>Virtual DOM</b> in React.js and how does it work?</div>
+
+        <div style="margin-top:18px;display:flex;justify-content:center;gap:14px" class="btn-row">
+          <button class="btn ghost" onclick="repeatQuestion()">Repeat</button>
+          <button class="btn warn" onclick="finishInterview()">Leave interview</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6) FEEDBACK -->
+    <section id="feedback" class="screen">
+      <div class="card" style="max-width:840px;margin:auto">
+        <div class="topbar">
+          <div class="logo"><div class="mark">PW</div><div><h1 class="logo-title">PrepWise</h1><div class="small muted">Feedback</div></div></div>
+          <div><button class="btn ghost" onclick="go('dashboard')">Back to dashboard</button></div>
+        </div>
+
+        <h1 style="text-align:center">Feedback on the Interview — <br><span id="fbRole">Frontend Developer Interview</span></h1>
+
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:12px">
+          <div class="score">Overall Impression: <b id="scoreVal">12/100</b></div>
+          <div class="small muted">📅 <span id="scoreDate">Feb 28, 2025 — 3:45 PM</span></div>
+        </div>
+
+        <p class="small muted" style="margin-top:12px;text-align:center;max-width:76%;margin-left:auto;margin-right:auto">
+          This interview does not reflect serious interest or engagement from the candidate. Their responses are dismissive, vague, or outright negative, making it difficult to assess their qualifications, motivation, or suitability for the role.
+        </p>
+
+        <h3 style="margin-top:18px">Breakdown of Evaluation:</h3>
+        <div class="small muted" style="margin-top:8px;line-height:1.6">
+          <b>1. Enthusiasm & Interest (0/20)</b>
+          <ul>
+            <li>The candidate openly states, "I really don't," when asked why they want to work for the company.</li>
+            <li>Their response to future career plans ("Probably in some other company") indicates a lack of commitment.</li>
+          </ul>
+
+          <b>2. Communication Skills (5/20)</b>
+          <ul>
+            <li>Responses are brief and unhelpful.</li>
+            <li>Some answers lack clarity.</li>
+          </ul>
+
+          <b>3. Self-Awareness & Reflection (2/20)</b>
+          <ul>
+            <li>The candidate refuses to discuss their background and weaknesses.</li>
+            <li>Claims to have "no weaknesses," suggesting a lack of self-awareness.</li>
+          </ul>
+        </div>
+
+        <div style="margin-top:18px;display:flex;justify-content:center;gap:14px">
+          <div class="small muted" style="align-self:center">Final Verdict:</div>
+          <div class="verdict">Not Recommended</div>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:16px;margin-top:22px">
+          <button class="btn ghost" onclick="go('dashboard')">Back to dashboard</button>
+          <button class="btn primary" onclick="go('confirmation')">Retake interview</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+<script>
+  // create some twinkling stars
+  (function stars(){
+    const root = document.getElementById('stars');
+    for(let i=0;i<28;i++){
+      const s = document.createElement('div');
+      s.className='star';
+      s.style.left = Math.random()*100 + '%';
+      s.style.top = Math.random()*100 + '%';
+      s.style.width = s.style.height = (Math.random()*2+1) + 'px';
+      s.style.animationDelay = (Math.random()*6 - 3) + 's';
+      s.style.opacity = (Math.random()*0.8+0.05);
+      root.appendChild(s);
+    }
+  })();
+
+  // simple navigation between sections
+  function go(screenId){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    const el = document.getElementById(screenId);
+    if(el) el.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // login / demo handlers
+  document.getElementById('togglePwd').addEventListener('click',()=>{
+    const p = document.getElementById('loginPwd');
+    p.type = p.type==='password' ? 'text' : 'password';
+    document.getElementById('togglePwd').textContent = p.type==='password' ? 'Show' : 'Hide';
+  });
+
+  function login(){
+    // (demo) validate minimal fields then go
+    const email = document.getElementById('loginEmail').value.trim();
+    const pwd = document.getElementById('loginPwd').value.trim();
+    if(!email || !pwd){ alert('Enter email and password (demo)'); return }
+    // set demo avatar (optional)
+    setAvatarDemo();
+    go('dashboard');
+  }
+
+  // navigate when "Create" clicked -> just show confirmation flow for demo
+  document.getElementById('goSignup').addEventListener('click',function(e){
+    e.preventDefault(); go('confirmation');
+  });
+
+  // small helper to set images/avatars
+  function setAvatarDemo(){
+    // data-URI or placeholder color blocks; for demo we'll create small circles using SVG data URIs
+    const svgUser = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="100%" height="100%" fill="#2b2d36"/><circle cx="60" cy="42" r="28" fill="#8ebeff"/><rect x="18" y="78" width="84" height="22" rx="10" fill="#222"/></svg>');
+    const data = 'data:image/svg+xml;utf8,'+svgUser;
+    ['aiImg','youImg','aiFace','youFace','interviewAvatar','aiImg','youImg','avatarTiny'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.src = data;
+    });
+  }
+  // call once on load to set placeholders
+  setAvatarDemo();
+
+  // start from dashboard quick start:
+  function startFromDashboard(type){
+    // we set role and move to confirmation
+    document.getElementById('confirmRole').value = type + ' Developer';
+    document.getElementById('confirmStack').value = type === 'DevOps' ? 'Docker, K8s, AWS' : 'React, Node.js';
+    go('confirmation');
+  }
+
+  // open interview (past)
+  function openInterview(name, viewOnly=false){
+    // set content and show interview but if viewOnly go to feedback
+    document.getElementById('currentQuestion').innerHTML = 'Review: What type of questions were asked in the ' + name + ' interview?';
+    if(viewOnly) go('feedback'); else go('interview');
+  }
+
+  // confirmation to start
+  document.getElementById('confirmProfile').addEventListener('change',function(e){
+    const f = e.target.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = ()=> { document.getElementById('interviewAvatar').src = reader.result; document.getElementById('youFace').src = reader.result; }
+    reader.readAsDataURL(f);
+  });
+
+  function startInterview(){
+    // read selections and go to interview page
+    const type = document.getElementById('confirmType').value;
+    const role = document.getElementById('confirmRole').value || 'Frontend Developer';
+    document.getElementById('fbRole').textContent = role + ' Interview';
+    document.getElementById('interviewBadge').textContent = type + ' Interview';
+    // set question based on role (demo)
+    const qMap = {
+      'Frontend Developer':'What is the Virtual DOM in React.js and how does it work?',
+      'Full-Stack Developer':'Explain CORS and how you solve related issues.',
+      'DevOps':'Explain the difference between Docker and Kubernetes.',
+      'HR':'Tell me about a time you failed and what you learned.'
+    };
+    document.getElementById('currentQuestion').innerHTML = qMap[role.split(' ')[0]] || qMap['Frontend Developer'];
+    go('interview');
+
+    // small timed flow: after a short delay automatically show feedback (demo)
+    // (in a real app you would record audio, send to AI, get results)
+    setTimeout(()=> {
+      // simulate interview done -> show feedback automatically after chosen duration (demo)
+      const dur = document.getElementById('confirmLength').value || '20 minutes';
+      const secs = dur.includes('10') ? 4 : dur.includes('20') ? 6 : 8;
+      // show an intermediate little "in progress" pulse (optional)
+      const q = document.getElementById('currentQuestion');
+      q.textContent = 'Interview in progress... (demo)';
+      // after secs, go to feedback
+      setTimeout(()=> {
+        // simulate scoring
+        document.getElementById('scoreVal').textContent = Math.floor(Math.random()*60 + 20) + '/100';
+        document.getElementById('scoreDate').textContent = new Date().toLocaleString();
+        go('feedback');
+      }, secs*1000);
+    }, 1200);
+  }
+
+  function repeatQuestion(){ alert('Repeating question (demo).') }
+  function finishInterview(){ if(confirm('Leave interview?')) go('feedback') }
+
+  // small helper to directly open pages from demo buttons
+  window.openInterview = openInterview;
+  window.startFromDashboard = startFromDashboard;
+
+  // auto-fill a demo avatar on load (if files not selected)
+  window.addEventListener('load', ()=> {
+    setAvatarDemo();
+  });
+</script>
+</body>
+</html>

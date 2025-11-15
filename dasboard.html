@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrepWise Dashboard</title>
+  <style>
+    :root {
+      --bg: #08090f;
+      --card: rgba(20, 21, 28, 0.55);
+      --card-border: rgba(255, 255, 255, 0.06);
+      --muted: #babac7;
+      --accent: #d6caff;
+      --radius: 20px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #08090f;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* Dark Grid Background */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: -2;
+    }
+
+    /* Soft Glow */
+    .glow-bg {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(120, 90, 255, 0.18), transparent 60%);
+      z-index: -1;
+    }
+
+    header {
+      padding: 18px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h2 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .hero {
+      width: 92%;
+      margin: 20px auto;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 30px;
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      animation: fadeUp 0.9s ease;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      font-size: 22px;
+      margin: 30px 60px 10px;
+      font-weight: 700;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+      width: 92%;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 18px;
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      animation: floatUp 0.8s ease;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    @keyframes floatUp {
+      from { opacity:0; transform: translateY(15px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 30px rgba(140, 120, 255, 0.15);
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(200, 180, 255, 0.15);
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .card h3 {
+      margin: 6px 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .btn:hover {
+      background: #e9ddff;
+    }
+
+    /* Login Link */
+    .logout {
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+  <div class="glow-bg"></div>
+
+  <header>
+    <h2>PrepWise Dashboard</h2>
+    <span class="logout" onclick="location.href='login.html'">Logout</span>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h2>Get Interview‑Ready with AI</h2>
+      <p>Boost your confidence with AI-powered interview simulations and detailed feedback.</p>
+    </div>
+    <img src="robot.png" width="150" />
+  </div>
+
+  <h3 class="section-title">Your Past Interviews</h3>
+  <div class="cards">
+    <div class="card">
+      <span class="badge">Technical</span>
+      <h3>Frontend Dev Interview</h3>
+      <p>Practice frontend questions asked in top company interviews.</p>
+      <button class="btn">View Interview</button>
+    </div>
+
+    <div class="card">
+      <span class="badge">Non‑Technical</span>
+      <h3>Behavioral Interview</h3>
+      <p>Improve communication and soft skills with realistic scenarios.</p>
+      <button class="btn">View Interview</button>
+    </div>
+
+    <div class="card">
+      <span class="badge">Technical</span>
+      <h3>Backend Dev Interview</h3>
+      <p>Master server-side and API‑based interview questions.</p>
+      <button class="btn">View Interview</button>
+    </div>
+  </div>
+
+  <h3 class="section-title">Pick Your Interview</h3>
+  <div class="cards">
+    <div class="card">
+      <span class="badge">Technical</span>
+      <h3>Full‑Stack Dev Interview</h3>
+      <p>A combined interview covering both frontend and backend concepts.</p>
+      <button class="btn">Take Interview</button>
+    </div>
+
+    <div class="card">
+      <span class="badge">Technical</span>
+      <h3>DevOps & Cloud Interview</h3>
+      <p>Practice Docker, Kubernetes, AWS, Azure and CI/CD interview questions.</p>
+      <button class="btn">Take Interview</button>
+    </div>
+
+    <div class="card">
+      <span class="badge">Non‑Technical</span>
+      <h3>HR Screening Interview</h3>
+      <p>Prepare for HR‑related interview rounds and initial screenings.</p>
+      <button class="btn">Take Interview</button>
+    </div>
+  </div>
+
+</body>
+</html>

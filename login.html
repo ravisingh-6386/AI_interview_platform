@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PrepWise — AI Interview Platform (Signup)</title>
+  <style>
+    :root{
+      --bg:#07070b;
+      --card:#0f1116cc; /* translucent card */
+      --muted:#bdbbd0;
+      --accent:#d8c9ff;
+      --input:#262730;
+      --glass-border: rgba(255,255,255,0.04);
+      --radius:28px;
+      --fw:600;
+    }
+
+    /* Reset */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.02) 0, transparent 10%),
+                  radial-gradient(ellipse at 80% 90%, rgba(255,255,255,0.02) 0, transparent 10%),
+                  linear-gradient(180deg, #07060a 0%, #0b0b11 100%);
+      color:#e9e9f2;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    /* decorative grid & subtle stars */
+    .bg-layer{
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+    }
+    .grid{
+      position:absolute; inset:0; background-image:
+        linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+      background-size: 56px 56px;
+      opacity:0.7; transform:translateZ(0);
+      mix-blend-mode:screen;
+      filter:blur(2px) contrast(0.9);
+    }
+    .vignette{position:absolute; inset:0; background:radial-gradient(60% 50% at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 60%);}
+
+    /* twinkling stars */
+    .stars{position:absolute; inset:0;}
+    .star{position:absolute; width:2px; height:2px; background:linear-gradient(180deg,#fff,#c3bff0); border-radius:50%; opacity:0.9; animation:twinkle 4s infinite ease-in-out;}
+    .star.slow{animation-duration:7s}
+    @keyframes twinkle{0%,100%{opacity:0.08; transform:scale(0.7)}50%{opacity:1; transform:scale(1.25)}}
+
+    /* Card */
+    .card-wrap{position:relative; z-index:2; width:100%; max-width:760px; padding:48px; display:flex; justify-content:center}
+    .card{
+      width:460px; border-radius:var(--radius); padding:36px 36px 30px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      box-shadow: 0 10px 40px rgba(5,6,10,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      backdrop-filter: blur(9px) saturate(120%);
+      transform:translateY(-6px);
+      transition:transform .4s cubic-bezier(.2,.9,.2,1);
+    }
+    .card:hover{transform:translateY(-10px)}
+
+    /* accent rim */
+    .card:before{
+      content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+      background:linear-gradient(90deg, rgba(216,201,255,0.06), rgba(150,135,255,0.03)); mix-blend-mode:overlay; z-index:0;
+    }
+
+    .logo{display:flex; align-items:center; gap:12px; justify-content:center; margin-bottom:10px; position:relative; z-index:1}
+    .logo svg{width:54px; height:54px}
+    .title{font-size:20px; font-weight:700; margin:0 0 4px}
+    .subtitle{font-size:13px; color:var(--muted); margin:0 0 18px}
+
+    form{position:relative; z-index:1}
+    .field{margin-bottom:12px}
+
+    .label{display:block; font-size:12px; color:var(--muted); margin-bottom:8px; text-align:left}
+    .input{
+      width:100%; display:flex; align-items:center; gap:12px;
+      background:var(--input); border-radius:999px; padding:12px 16px; border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 4px 14px rgba(2,3,6,0.6) inset;
+    }
+    .input input{flex:1; border:0; outline:none; background:transparent; color:inherit; font-size:14px}
+    .input .hint{font-size:13px; color:var(--muted)}
+
+    .file-btn{display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer}
+    .file-btn input{display:none}
+
+    .cta{margin-top:18px}
+    .btn{
+      width:100%; padding:12px 16px; border-radius:999px; border:0; cursor:pointer; font-weight:700; font-size:15px;
+      background:linear-gradient(90deg,var(--accent), #c9bdfd 40% ); color:#08060a; box-shadow:0 10px 30px rgba(193,172,255,0.12);
+    }
+
+    .small{font-size:13px; color:var(--muted); margin-top:12px; text-align:center}
+
+    /* subtle floating animation for card */
+    @keyframes floaty{0%{transform:translateY(-8px)}50%{transform:translateY(-12px)}100%{transform:translateY(-8px)}}
+    .card{animation:floaty 6s ease-in-out infinite}
+
+    /* focus states */
+    .input:focus-within{box-shadow:0 6px 30px rgba(110,90,255,0.08), inset 0 1px 0 rgba(255,255,255,0.02); border:1px solid rgba(180,160,255,0.14)}
+
+    /* responsive */
+    @media (max-width:540px){
+      .card{width:92%; padding:24px}
+      .logo svg{width:46px;height:46px}
+    }
+
+    /* small helper icons */
+    .icon{width:18px;height:18px;opacity:0.9}
+
+  </style>
+</head>
+<body>
+  <div class="bg-layer">
+    <div class="grid"></div>
+    <div class="vignette"></div>
+    <div class="stars" aria-hidden="true">
+      <!-- some JS will place stars but provide a few static ones for layout -->
+      <div class="star" style="left:8%; top:18%; animation-delay:-1s"></div>
+      <div class="star slow" style="left:72%; top:12%; animation-delay:-2.3s"></div>
+      <div class="star" style="left:38%; top:76%; animation-delay:-0.4s"></div>
+      <div class="star slow" style="left:84%; top:60%; animation-delay:-5s"></div>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="card" role="main" aria-labelledby="signup-title">
+      <div class="logo">
+        <!-- inline simple logo resembling the sample -->
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0" stop-color="#bdb0ff"/>
+              <stop offset="1" stop-color="#8e7bff"/>
+            </linearGradient>
+          </defs>
+          <rect x="6" y="6" width="52" height="52" rx="12" fill="#0d0f16" stroke="url(#g1)" stroke-opacity="0.12"/>
+          <path d="M22 28c4-6 14-6 18 0" stroke="url(#g1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="44" cy="44" r="6" fill="#1b1c23" stroke="url(#g1)" stroke-width="2" />
+        </svg>
+        <div style="text-align:left">
+          <div id="signup-title" class="title">Practice job interviews with AI</div>
+          <div class="subtitle">PrepWise — build confidence with real interview simulations</div>
+        </div>
+      </div>
+
+      <form id="signup" onsubmit="return false;">
+
+        <div class="field">
+          <label class="label">Full name</label>
+          <div class="input">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM4 20c0-3.31 2.69-6 6-6h4c3.31 0 6 2.69 6 6" stroke="#cfcff6" stroke-opacity="0.9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <input type="text" placeholder="Adrian Hajdin" aria-label="Full name" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="input">
+            <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M3 6.5v11A2.5 2.5 0 0 0 5.5 20h13A2.5 2.5 0 0 0 21 17.5v-11" stroke="#cfcff6" stroke-opacity="0.9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 7l9 6 9-6" stroke="#cfcff6" stroke-opacity="0.9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <input type="email" placeholder="adrian@jpmastery.pro" aria-label="Email" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Password</label>
+          <div class="input" style="justify-content:space-between">
+            <input id="pwd" type="password" placeholder="Enter your password" aria-label="Password" />
+            <button type="button" style="background:none;border:0;color:var(--muted);font-weight:600;cursor:pointer" onclick="togglePwd()" aria-label="Show password">Show</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Profile picture</label>
+          <label class="input file-btn" tabindex="0">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v12" stroke="#cfcff6" stroke-opacity="0.95" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 8l5-5 5 5" stroke="#cfcff6" stroke-opacity="0.95" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21H3a2 2 0 0 1-2-2V8" stroke="#cfcff6" stroke-opacity="0.06" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="hint">Upload an image</span>
+            <input id="imgfile" type="file" accept="image/*" onchange="previewImage(event)" />
+          </label>
+        </div>
+
+        <div class="field">
+          <label class="label">Resume</label>
+          <label class="input file-btn">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" stroke="#cfcff6" stroke-opacity="0.9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v6h6" stroke="#cfcff6" stroke-opacity="0.9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="hint">Upload a PDF</span>
+            <input id="pdffile" type="file" accept="application/pdf" onchange="previewPDF(event)" />
+          </label>
+        </div>
+
+        <div class="cta">
+          <button class="btn" type="submit" onclick="createAccount()">Create an account</button>
+        </div>
+
+        <div class="small">Already have an account? <span style="color:var(--accent);font-weight:700">Sign in</span></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // add more stars dynamically for a subtle parallax
+    (function addStars(){
+      const container = document.querySelector('.stars');
+      for(let i=0;i<22;i++){
+        const s = document.createElement('div');
+        s.className='star '+(Math.random()>0.7?'slow':'');
+        s.style.left = Math.random()*100+'%';
+        s.style.top = Math.random()*100+'%';
+        s.style.animationDelay = (Math.random()*6-3)+'s';
+        s.style.opacity = (Math.random()*0.9+0.05).toFixed(2);
+        s.style.transformOrigin='center';
+        s.style.width = s.style.height = (Math.random()*2+1)+'px';
+        container.appendChild(s);
+      }
+    })();
+
+    function togglePwd(){
+      const p = document.getElementById('pwd');
+      if(p.type==='password'){p.type='text'}else{p.type='password'}
+    }
+
+    function previewImage(e){
+      const f = e.target.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        // show small preview by changing the file button text
+        const label = document.querySelector('#imgfile').parentElement;
+        label.querySelector('.hint').textContent = f.name;
+      };
+      reader.readAsDataURL(f);
+    }
+    function previewPDF(e){
+      const f = e.target.files[0];
+      if(!f) return;
+      const label = document.querySelector('#pdffile').parentElement;
+      label.querySelector('.hint').textContent = f.name;
+    }
+
+    function createAccount(){
+      const btn = document.querySelector('.btn');
+      btn.disabled = true; btn.textContent='Creating...';
+      setTimeout(()=>{ btn.disabled=false; btn.textContent='Create an account'; alert('Demo: account created (this is a static demo).'); }, 900);
+    }
+  </script>
+</body>
+</html>

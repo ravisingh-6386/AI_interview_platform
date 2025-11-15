@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PrepWise – Interview Confirmation</title>
+<style>
+  :root{
+    --bg:#08090f;
+    --card:rgba(20,22,33,0.55);
+    --border:rgba(255,255,255,0.06);
+    --radius:26px;
+    --muted:#c5c5d8;
+    --accent:#dcd2ff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Inter, sans-serif;}
+  body{
+    background:var(--bg);
+    color:white;
+    overflow-x:hidden;
+    padding:40px;
+  }
+
+  /* GRID BACKGROUND */
+  .grid{
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size:55px 55px;
+    z-index:-2;
+  }
+  .glow{
+    position:fixed; inset:0;
+    background:radial-gradient(circle at 40% 10%, rgba(150,120,255,0.14), transparent 65%);
+    z-index:-1;
+  }
+
+  h1.title{font-size:22px; margin-bottom:8px;}
+  p.desc{color:var(--muted); font-size:14px; margin-bottom:25px;}
+
+  /* CARD */
+  .card{
+    width:460px; margin:auto;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:34px;
+    backdrop-filter:blur(14px);
+    animation:fadeUp .9s ease;
+  }
+
+  @keyframes fadeUp{
+    0%{opacity:0; transform:translateY(20px);} 
+    100%{opacity:1; transform:translateY(0);} 
+  }
+
+  label{
+    display:block;
+    font-size:14px;
+    margin:10px 0 6px;
+  }
+
+  select, .input{
+    width:100%; padding:12px 16px;
+    background:#1a1c27;
+    border-radius:100px;
+    border:1px solid var(--border);
+    color:white;
+    outline:none;
+    font-size:14px;
+  }
+
+  .upload{
+    background:#1a1c27;
+    border-radius:100px;
+    border:1px solid var(--border);
+    padding:12px 16px;
+    font-size:14px;
+    color:var(--muted);
+    cursor:pointer;
+    text-align:center;
+    margin-top:6px;
+  }
+  .upload input{display:none;}
+
+  .btn{
+    width:100%; padding:14px 16px;
+    background:var(--accent);
+    border:0; border-radius:100px;
+    font-weight:700; font-size:15px;
+    margin-top:25px; cursor:pointer;
+    transition:.25s;
+    color:#000;
+  }
+  .btn:hover{background:#ece4ff;}
+
+</style>
+</head>
+<body>
+<div class="grid"></div>
+<div class="glow"></div>
+
+<div class="card">
+  <img src="logo.png" width="140" style="display:block; margin:auto; margin-bottom:20px;" />
+
+  <h1 class="title">Starting Your Interview</h1>
+  <p class="desc">Customize your mock interview to suit your needs.</p>
+
+  <label>What type of interview would you like to practice?</label>
+  <select>
+    <option>Technical</option>
+    <option>Non-Technical</option>
+  </select>
+
+  <label>What role are you focusing on?</label>
+  <input class="input" placeholder="Select your role" />
+
+  <label>Which tech stack would you like to focus on?</label>
+  <input class="input" placeholder="Select your preferred tech stack" />
+
+  <label>How long would you like the interview to be?</label>
+  <select>
+    <option>10 minutes</option>
+    <option>20 minutes</option>
+    <option>30 minutes</option>
+  </select>
+
+  <label>Profile picture</label>
+  <label class="upload">Upload an image <input type="file" /></label>
+
+  <button class="btn" onclick="location.href='workflow.html'">Start Interview</button>
+</div>
+
+</body>
+</html>
